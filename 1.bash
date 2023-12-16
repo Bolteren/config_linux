@@ -65,6 +65,34 @@ msg_default()
     clear
 }
 
+install_programm()
+{
+    CHECK_PO=$(whiptail --title "Progreamm" --checklist \
+    "______________________Какое ОП необходимо установить?_____________________" 15 60 8 \
+    'git' "install git" OFF \
+    'curl' "install curl" OFF \
+    'clang' "install clang" OFF \
+    'gcc' "install gcc" OFF \
+    'libccid' "rutoken" OFF \
+    'pcscd' "rutoken" OFF \
+    'libpcsclite1' "rutoken" OFF \
+    3>&1 1>&2 2>&3 )
+
+    exitstatus=$?
+    if [ $exitstatus = 0 ]; then
+        CHECK_PO_EDIT=$(echo $CHECK_PO | tr -d \")
+        for PO in $CHECK_PO_EDIT
+        do
+            echo $PO
+            apt install $PO -y
+        done
+        apt autoremove -y
+        apt autoclean
+    else
+        echo "Tou chase Cansel"
+    fi
+}
+
 settings_main()
 {
     clear
@@ -112,36 +140,16 @@ settings_main()
     else
         echo "Using non apt"
     fi
-    whiptail --title "Настройка" --msgbox "Настройка завершина" 14 58
+#    whiptail --title "Настройка" --msgbox "Настройка завершина" 14 58
+    install_programm
+    whiptail --title "Установка" --msgbox "Установка завершина" 14 58
     msg_default
 }
 
 
-install_programm()
+main()
 {
-    CHECK_PO=$(whiptail --title "Progreamm" --checklist \
-    "______________________Какое ОП необходимо установить?_____________________" 15 60 8 \
-    'git' "install git" OFF \
-    'curl' "install curl" OFF \
-    'clang' "install clang" OFF \
-    'gcc' "install gcc" OFF \
-    'libccid' "rutoken" OFF \
-    'pcscd' "rutoken" OFF \
-    'libpcsclite1' "rutoken" OFF \
-    3>&1 1>&2 2>&3 )
-
-    exitstatus=$?
-    if [ $exitstatus = 0 ]; then
-        CHECK_PO_EDIT=$(echo $CHECK_PO | tr -d \")
-        for PO in $CHECK_PO_EDIT
-        do
-            echo $PO
-            sudo apt install $PO -y
-        done
-    else
-        echo "Tou chase Cansel"
-    fi
+    settings_main
 }
 
-install_programm
-#settings_main
+main
