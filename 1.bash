@@ -116,4 +116,32 @@ settings_main()
     msg_default
 }
 
-settings_main
+
+install_programm()
+{
+    CHECK_PO=$(whiptail --title "Progreamm" --checklist \
+    "______________________Какое ОП необходимо установить?_____________________" 15 60 8 \
+    'git' "install git" OFF \
+    'curl' "install curl" OFF \
+    'clang' "install clang" OFF \
+    'gcc' "install gcc" OFF \
+    'libccid' "rutoken" OFF \
+    'pcscd' "rutoken" OFF \
+    'libpcsclite1' "rutoken" OFF \
+    3>&1 1>&2 2>&3 )
+
+    exitstatus=$?
+    if [ $exitstatus = 0 ]; then
+        CHECK_PO_EDIT=$(echo $CHECK_PO | tr -d \")
+        for PO in $CHECK_PO_EDIT
+        do
+            echo $PO
+            sudo apt install $PO -y
+        done
+    else
+        echo "Tou chase Cansel"
+    fi
+}
+
+install_programm
+#settings_main
